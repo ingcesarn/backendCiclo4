@@ -11,6 +11,7 @@ const ConexionDB_1 = __importDefault(require("./ConexionDB"));
 //
 const PerfilRuta_1 = __importDefault(require("../ruta/PerfilRuta"));
 const UsuarioRuta_1 = __importDefault(require("../ruta/UsuarioRuta"));
+const Seguridad_1 = __importDefault(require("../middleware/Seguridad"));
 class Servidor {
     //Creamos el constructor
     constructor() {
@@ -41,8 +42,8 @@ class Servidor {
     ;
     //Creamos metodo iniciarRutas
     iniciarRutas() {
-        //No hemos visto rutas
-        this.app.use("/api/perfil", PerfilRuta_1.default);
+        //Le vamos a agregar el parametro seguridad.analizarToken
+        this.app.use("/api/perfil", Seguridad_1.default.analizarToken, PerfilRuta_1.default);
         //
         this.app.use("/api/Usuario", UsuarioRuta_1.default);
     }

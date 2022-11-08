@@ -1,29 +1,42 @@
-import { Request, Response } from "express";
+// Archivo: src\controlador\UsuarioControlador.ts
+// Contiene los métodos más importantes para llamar los métodos de los DAOS
 
-//Importamos PerfilDao.ts
-import UsuarioDao from "../dao/UsuarioDao";
+
+import UsuarioDao from '../dao/UsuarioDao';
+import { Request, Response } from 'express';
 
 class UsuarioControlador extends UsuarioDao {
-  //se crea un metodo publico
-  public consulta (req: Request, res: Response) {
-    UsuarioControlador.consultarUsuarios(res);
-  };
 
-  public crear (req:Request,res:Response){
-    const elCorreo = {correoUsuario:req.body.correoUsuario};
-    UsuarioControlador.crearUsuario(elCorreo,req.body,res);
+    public cantidadEnPerfil(req: Request, res: Response): void {
+        UsuarioControlador.cantidadUsuariosEnPerfil(req.params.codPerfil, res);
+    }
+
+    public consulta(req: Request, res: Response): void {
+        UsuarioControlador.obtenerUsuarios(res);
+    }
+
+    public consultPerfil(req: Request, res: Response): void {
+        UsuarioControlador.obtenerUsuariosPerfil(req.params.codPerfil, res);
+    }
+
+    public crear(req: Request, res: Response): void {
+        const correo = { correoUsuario: req.body.correoUsuario };
+        UsuarioControlador.crearUsuario(correo, req.body, res);
+    }
+
+    public iniciar(req: Request, res: Response): void {
+        UsuarioControlador.iniciarSesion(req.body, res);
+    }
+
+    public eliminar(req: Request, res: Response): void {
+        UsuarioControlador.eliminarUsuario(req.params.codUsuario, res);
+    }
+
+    public actualizar(req: Request, res: Response): void {
+        UsuarioControlador.actualizarUsuario(req.params.codUsuario, req.body, res);
+    }
+
 };
 
-public eliminar(req:Request,res:Response){
-  UsuarioControlador.eliminarUsuario(req.params.codiguito,res);
-};
-
-public actualizar(req:Request,res:Response){
-  UsuarioControlador.actualizarUsuario(req.params.codiguito,req.body,res);
-};
-
-}
-
-//Aqui se exporta la clase a una variable tipo objeto y reutiliza la variable
 const usuarioControlador = new UsuarioControlador();
 export default usuarioControlador;

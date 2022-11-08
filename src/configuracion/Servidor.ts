@@ -8,6 +8,7 @@ import ConexionDB from "./ConexionDB";
 //
 import apiPerfilRuta from "../ruta/PerfilRuta";
 import apiUsuarioRuta from "../ruta/UsuarioRuta"
+import seguridad from "../middleware/Seguridad";
 class Servidor{
     //definimos una variable para configurar todo lo que usamos en la api
     public app: express.Application;
@@ -40,8 +41,8 @@ class Servidor{
 
     //Creamos metodo iniciarRutas
     public iniciarRutas(){
-        //No hemos visto rutas
-        this.app.use("/api/perfil",apiPerfilRuta);
+        //Le vamos a agregar el parametro seguridad.analizarToken
+        this.app.use("/api/perfil",seguridad.analizarToken, apiPerfilRuta);
         //
         this.app.use("/api/Usuario",apiUsuarioRuta);
     };

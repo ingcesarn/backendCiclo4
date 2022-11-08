@@ -1,29 +1,37 @@
 //importamos el router express
+//Archivo: src\ruta\PerfilRuta.ts
+//Contiene los endPoints que llaman los controladores
+
+
+
+
 import { Router } from "express";
 import usuarioControlador from "../controlador/usuarioControlador";
 
-class UsuarioRuta {
-    //definimos la variable tipo Router
-  public rutaApi: Router;
-  //inicializamos la variable rutaApi
-  constructor() {
-    this.rutaApi = Router();
-    this.configurarRutas();//Cuando se llama a un metodo se debe usar (); al final
-  };
+"../controlador/UsuarioControlador";
 
-   public configurarRutas(){
-    //Creamos un metodo o endpoint de tipo get
-    this.rutaApi.get("/listado",usuarioControlador.consulta);
-     //Creamos un metodo o endpoint de tipo post
-    this.rutaApi.post("/crear",usuarioControlador.crear);
-    //Creamos un metodo o endpoint de tipo delete
-    this.rutaApi.delete("/eliminar/:codiguito",usuarioControlador.eliminar);
-    //Creamos un metodo o endpoint de tipo put
-    this.rutaApi.put("/actualizar/:codiguito",usuarioControlador.actualizar);
-  };
-  
-}
+class UsuarioRuta {
+
+    public rutaAPI: Router;
+
+    constructor() {
+        this.rutaAPI = Router();
+        this.configuracion();
+    }
+
+    public configuracion(): void {
+        this.rutaAPI.get('/todos', usuarioControlador.consulta);
+        this.rutaAPI.get('/todos/:codPerfil', usuarioControlador.consultPerfil);
+        this.rutaAPI.get('/cantxperfil/:codPerfil', usuarioControlador.cantidadEnPerfil);
+
+        this.rutaAPI.post('/crear', usuarioControlador.crear);
+        this.rutaAPI.post('/iniciar', usuarioControlador.iniciar);
+        this.rutaAPI.delete('/eliminar/:codUsuario', usuarioControlador.eliminar);
+        this.rutaAPI.put('/actualizar/:codUsuario', usuarioControlador.actualizar);
+    }
+
+};
 
 const usuarioRuta = new UsuarioRuta();
-//aqui exportamos una propiedad de tipo Router para tener acceso a todos los enpoint
-export default usuarioRuta.rutaApi;
+export default usuarioRuta.rutaAPI;
+

@@ -13,94 +13,106 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const PerfilEsquema_1 = __importDefault(require("../esquema/PerfilEsquema"));
+const UsuarioEsquema_1 = __importDefault(require("../esquema/UsuarioEsquema"));
 class PerfilDao {
-    //Creamos una promesa o metodo que saca los perfiles de la BD
-    static consultarPerfiles(res) {
+    // Consultar los datos de un perfil por un código específico
+    // ************************************************************************************
+    static obtenerUnPerfil(identificador, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //en esta linea se hace una consulta
-            const datos = yield PerfilEsquema_1.default.find().sort({ _id: -1 });
-            //Se entrega la consulta al cliente
-            res.status(200).json(datos);
-            //200 quiere decir que todo nos fue bien
+            const jsonPerfil = { _id: identificador };
+            const existePerfil = yield PerfilEsquema_1.default.findOne(jsonPerfil).exec();
+            if (existePerfil) {
+                res.status(200).json(existePerfil);
+            }
+            else {
+                res.status(400).json({ respuesta: "El perfil NO existe con ese identificador" });
+            }
         });
     }
-    static crearPerfiles(parametros, res) {
+    // ************************************************************************************
+    // Obtener perfiles en orden descendente (-1)
+    // ************************************************************************************
+    static obtenerPerfiles(res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //en esta line se hace una consulta
+            const datos = yield PerfilEsquema_1.default.find().sort({ _id: -1 });
+            ;
+            res.status(200).json(datos);
+        });
+    }
+    // ************************************************************************************
+    // Crear perfil verificando su existencia
+    // ************************************************************************************
+    static crearPerfil(parametros, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            delete parametros._id;
+            delete parametros.datosUsuario;
             const existe = yield PerfilEsquema_1.default.findOne(parametros);
             if (existe) {
-                res.status(400).json({ respuesta: "El perfil ya existe socio" });
+                res.status(400).json({ respuesta: "El perfil ya existe" });
             }
             else {
                 const objPerfil = new PerfilEsquema_1.default(parametros);
-                objPerfil.save((miError, MiObjeto) => {
+                objPerfil.save((miError, objeto) => {
                     if (miError) {
-                        res.status(400).json({ respuesta: "No se puede cerar socio paila " });
+                        res.status(400).json({ respuesta: 'Error al crear el Perfil' });
                     }
                     else {
-                        res.status(200).json({
-                            respuesta: "Breve ya se creo todo bien ",
-                            codigo: MiObjeto._id,
-                        });
+                        res.status(200).json({ id: objeto._id });
                     }
                 });
             }
         });
     }
-    static eliminarPerfil(identificador, res) {
+    // ************************************************************************************
+    // Eliminar perfil por código, verificando antes que no tenga usuarios asociados
+    // ************************************************************************************
+    static eliminarPerfil(parametro, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //en esta line se hace una consulta
-            //const existe = await PerfilEsquema.findById(identificador);
-            const existe = yield PerfilEsquema_1.default.findById(identificador).exec();
-            if (existe) {
-                PerfilEsquema_1.default.findByIdAndDelete(identificador, (miError, MiObjeto) => {
-                    if (miError) {
-                        res
-                            .status(400)
-                            .json({ respuesta: "No se puede Eliminar socio paila " });
-                    }
-                    else {
-                        res
-                            .status(200)
-                            .json({
-                            respuesta: "Breve ya se Elimino todo bien ",
-                            eliminado: MiObjeto,
-                        });
-                    }
-                });
+            const llave = { _id: parametro };
+            const cantidad = yield UsuarioEsquema_1.default.countDocuments({ codPerfil: llave });
+            if (cantidad > 0) {
+                res.status(400).json({ respuesta: 'Error, el perfil tiene usuarios relacionados' });
             }
             else {
-                res.status(400).json({ respuesta: "Paila el perfil no existe yuca " });
+                const existe = yield PerfilEsquema_1.default.findById(parametro).exec();
+                if (existe) {
+                    PerfilEsquema_1.default.deleteOne({ _id: parametro }, (miError, objeto) => {
+                        //PerfilEsquema.findByIdAndDelete(parametro, (miError: any, objeto: any) => {
+                        if (miError) {
+                            res.status(400).json({ respuesta: 'Error al eliminar el Perfil' });
+                        }
+                        else {
+                            res.status(200).json({ eliminado: objeto });
+                        }
+                    });
+                }
+                else {
+                    res.status(400).json({ respuesta: "El perfil NO existe" });
+                }
             }
         });
     }
-    static actualizarPerfil(identificador, parametros, res) {
+    // ************************************************************************************
+    // Actualizar perfil por código y con body JSON
+    // ************************************************************************************
+    static actualizarPerfil(codigo, parametros, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            //en esta line se hace una consulta
-            //const existe = await PerfilEsquema.findById(identificador);
-            const existe = yield PerfilEsquema_1.default.findById(identificador).exec();
+            const existe = yield PerfilEsquema_1.default.findById(codigo).exec();
             if (existe) {
-                PerfilEsquema_1.default.findByIdAndUpdate({ _id: identificador }, { $set: parametros }, (miError, MiObjeto) => {
+                PerfilEsquema_1.default.findByIdAndUpdate({ _id: codigo }, { $set: parametros }, (miError, objeto) => {
                     if (miError) {
-                        res
-                            .status(400)
-                            .json({ respuesta: "No se puede Actualizar socio paila " });
+                        res.status(400).json({ respuesta: 'Error al actualizar el Perfil' });
                     }
                     else {
-                        res
-                            .status(200)
-                            .json({
-                            respuesta: "Breve ya se Actualizo todo bien ",
-                            antes: MiObjeto,
-                            despues: parametros
-                        });
+                        res.status(200).json({ antiguo: objeto, nuevo: parametros });
                     }
                 });
             }
             else {
-                res.status(400).json({ respuesta: "Paila el perfil no existe yuca " });
+                res.status(400).json({ respuesta: "El perfil NO existe" });
             }
         });
     }
 }
+;
 exports.default = PerfilDao;

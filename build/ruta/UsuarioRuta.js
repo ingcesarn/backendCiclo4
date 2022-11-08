@@ -1,30 +1,29 @@
 "use strict";
+//importamos el router express
+//Archivo: src\ruta\PerfilRuta.ts
+//Contiene los endPoints que llaman los controladores
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-//importamos el router express
 const express_1 = require("express");
 const usuarioControlador_1 = __importDefault(require("../controlador/usuarioControlador"));
+"../controlador/UsuarioControlador";
 class UsuarioRuta {
-    //inicializamos la variable rutaApi
     constructor() {
-        this.rutaApi = (0, express_1.Router)();
-        this.configurarRutas(); //Cuando se llama a un metodo se debe usar (); al final
+        this.rutaAPI = (0, express_1.Router)();
+        this.configuracion();
     }
-    ;
-    configurarRutas() {
-        //Creamos un metodo o endpoint de tipo get
-        this.rutaApi.get("/listado", usuarioControlador_1.default.consulta);
-        //Creamos un metodo o endpoint de tipo post
-        this.rutaApi.post("/crear", usuarioControlador_1.default.crear);
-        //Creamos un metodo o endpoint de tipo delete
-        this.rutaApi.delete("/eliminar/:codiguito", usuarioControlador_1.default.eliminar);
-        //Creamos un metodo o endpoint de tipo put
-        this.rutaApi.put("/actualizar/:codiguito", usuarioControlador_1.default.actualizar);
+    configuracion() {
+        this.rutaAPI.get('/todos', usuarioControlador_1.default.consulta);
+        this.rutaAPI.get('/todos/:codPerfil', usuarioControlador_1.default.consultPerfil);
+        this.rutaAPI.get('/cantxperfil/:codPerfil', usuarioControlador_1.default.cantidadEnPerfil);
+        this.rutaAPI.post('/crear', usuarioControlador_1.default.crear);
+        this.rutaAPI.post('/iniciar', usuarioControlador_1.default.iniciar);
+        this.rutaAPI.delete('/eliminar/:codUsuario', usuarioControlador_1.default.eliminar);
+        this.rutaAPI.put('/actualizar/:codUsuario', usuarioControlador_1.default.actualizar);
     }
-    ;
 }
+;
 const usuarioRuta = new UsuarioRuta();
-//aqui exportamos una propiedad de tipo Router para tener acceso a todos los enpoint
-exports.default = usuarioRuta.rutaApi;
+exports.default = usuarioRuta.rutaAPI;

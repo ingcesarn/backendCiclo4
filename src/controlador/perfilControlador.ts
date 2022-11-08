@@ -1,28 +1,31 @@
-import { Request, Response } from "express";
 
-//Importamos PerfilDao.ts
-import PerfilDao from "../dao/PerfilDao";
+
+import PerfilDao from '../dao/PerfilDao';
+import { Request, Response } from 'express';
 
 class PerfilControlador extends PerfilDao {
-  //se crea un metodo publico
-  public consulta(req: Request, res: Response) {
-    PerfilControlador.consultarPerfiles(res);
-  };
 
-  public crear (req:Request,res:Response){
-    PerfilControlador.crearPerfiles(req.body,res);
+    public consulta(req: Request, res: Response): void {
+        PerfilControlador.obtenerPerfiles(res);
+    }
+
+    public crear(req: Request, res: Response): void {
+        PerfilControlador.crearPerfil(req.body, res);
+    }
+
+    public eliminar(req: Request, res: Response): void {
+        PerfilControlador.eliminarPerfil(req.params.codigo, res);
+    }
+
+    public actualizar(req: Request, res: Response): void {
+        PerfilControlador.actualizarPerfil(req.params.codigo, req.body, res);
+    }
+
+    public consultaUno(req: Request, res: Response): void {
+        PerfilControlador.obtenerUnPerfil(req.params.codigo, res);
+    }
+
 };
 
-public eliminar(req:Request,res:Response){
-  PerfilControlador.eliminarPerfil(req.params.codiguito,res);
-};
-
-public actualizar(req:Request,res:Response){
-  PerfilControlador.actualizarPerfil(req.params.codiguito,req.body,res);
-};
-
-}
-
-//Aqui se exporta la clase a una variable tipo objeto y reutiliza la variable
 const perfilControlador = new PerfilControlador();
 export default perfilControlador;

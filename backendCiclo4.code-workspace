@@ -4,5 +4,36 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"workbench.colorTheme": "Solarized Dark",
+		"restoreTerminals.terminals": [
+			{
+			  "splitTerminals": [
+				{
+				  "name": "build",
+				  "commands": ["clear"]
+				},
+				{
+				  "name": "dev",
+				  "commands": ["clear"]
+				},
+				{
+				  "name": "cmd",
+				  "commands": ["clear"]
+				}
+			  ]
+			},
+			{
+			  "splitTerminals": [
+				{
+				  "name": "cmd",
+				  "commands": ["clear"],
+				},
+			  ]
+			}
+		  ]	
+	}
+
+
+
 }
